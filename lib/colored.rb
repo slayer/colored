@@ -2,9 +2,9 @@ require 'Win32/Console/ANSI' if RUBY_PLATFORM =~ /win32/
 
 ##
 # cute.
-# 
+#
 #   >> "this is red".red
-#  
+#
 #   >> "this is red with a blue background (read: ugly)".red_on_blue
 #
 #   >> "this is red with an underline".red.underline
@@ -15,10 +15,10 @@ require 'Win32/Console/ANSI' if RUBY_PLATFORM =~ /win32/
 module Colored
   extend self
 
-  COLORS = { 
+  COLORS = {
     'black'   => 30,
-    'red'     => 31, 
-    'green'   => 32, 
+    'red'     => 31,
+    'green'   => 32,
     'yellow'  => 33,
     'blue'    => 34,
     'magenta' => 35,
@@ -27,14 +27,19 @@ module Colored
   }
 
   EXTRAS = {
-    'clear'     => 0, 
+    'clear'     => 0,
     'bold'      => 1,
+    'italic'    => 3,
     'underline' => 4,
-    'reversed'  => 7
+    'blink'     => 5,
+    'blink_fast'=> 6,
+    'reversed'  => 7,
+    'bold_off'  => 21,
+    'normal'    => 22
   }
-  
+
   COLORS.each do |color, value|
-    define_method(color) do 
+    define_method(color) do
       colorize(self, :foreground => color)
     end
 
@@ -52,7 +57,7 @@ module Colored
 
   EXTRAS.each do |extra, value|
     next if extra == 'clear'
-    define_method(extra) do 
+    define_method(extra) do
       colorize(self, :extra => extra)
     end
   end
@@ -84,7 +89,7 @@ module Colored
     background = color_name.to_s =~ /on_/
     color_name = color_name.to_s.sub('on_', '')
     return unless color_name && COLORS[color_name]
-    "\e[#{COLORS[color_name] + (background ? 10 : 0)}m" 
+    "\e[#{COLORS[color_name] + (background ? 10 : 0)}m"
   end
 end unless Object.const_defined? :Colored
 
